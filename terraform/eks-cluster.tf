@@ -11,20 +11,16 @@ module "eks" {
 
   enable_cluster_creator_admin_permissions = true
 
-  enable_irsa = true
+  create_cloudwatch_log_group = false
 
   addons = {
   vpc-cni = {
     most_recent    = true
     before_compute = true
   }
+  
   coredns    = { most_recent = true }
   kube-proxy = { most_recent = true }
-  
-  aws-ebs-csi-driver = {
-    most_recent              = true
-    service_account_role_arn = module.ebs_csi_irsa.iam_role_arn
-  }
 
 }
 
@@ -39,23 +35,5 @@ module "eks" {
       instance_types = ["t3.medium"]
     }
 
-  }
-}
-
-module "ebs_csi_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.34.0"
-
-  role_name = "AmazonEKS_EBS_CSI_DriverRole"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn = module.eks.oidc_provider_arn
-      namespace_service_accounts = [
-        "kube-system:ebs-csi-controller-sa"
-      ]
-    }
   }
 }
