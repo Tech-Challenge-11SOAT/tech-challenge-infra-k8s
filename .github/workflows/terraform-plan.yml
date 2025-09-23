@@ -1,0 +1,45 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    branches:
+      - develop   # roda sempre que abrir PR contra develop
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform-plan:
+    environment: terraform
+    name: Run Terraform Plan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform   # pasta onde está seu código Terraform
+
+    env:
+      TF_VAR_cluster_name: tech-challenge-cluster
+      TF_VAR_region: us-east-1
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::601920909369:role/aws-actions
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -input=false
