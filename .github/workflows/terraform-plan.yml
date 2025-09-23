@@ -3,7 +3,7 @@ name: Terraform Plan
 on:
   pull_request:
     branches:
-      - develop   # roda sempre que abrir PR contra develop
+      - develop   
 
 permissions:
   id-token: write
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: terraform   # pasta onde está seu código Terraform
+        working-directory: terraform   
 
     env:
       TF_VAR_cluster_name: tech-challenge-cluster
