@@ -11,6 +11,7 @@ module "eks" {
 
   enable_cluster_creator_admin_permissions = true
 
+  create_cloudwatch_log_group = false
 
   addons = {
   vpc-cni = {
