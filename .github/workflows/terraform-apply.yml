@@ -3,7 +3,7 @@ name: Terraform Apply
 on:
   push:
     branches:
-      - develop   # ou main, se preferirem aplicar em produção
+      - develop   
 
 permissions:
   id-token: write
