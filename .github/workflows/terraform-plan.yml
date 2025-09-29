@@ -1,6 +1,7 @@
 name: Terraform Plan
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - develop   # roda sempre que abrir PR contra develop
