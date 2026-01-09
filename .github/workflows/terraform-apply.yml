@@ -3,8 +3,7 @@ name: Terraform Apply
 on:
   workflow_dispatch:
   push:
-    branches:
-      - develop   
+    branches: [develop]
 
 permissions:
   id-token: write
@@ -16,9 +15,6 @@ jobs:
     name: Run Terraform Apply
     if: github.event.head_commit.message != 'skip apply'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: terraform
 
     steps:
       - name: Checkout repository
@@ -34,9 +30,11 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
+        working-directory: terraform
         run: terraform init
 
       - name: Terraform Apply
+        working-directory: terraform
         run: terraform apply -auto-approve
 
       - name: Update kubeconfig (EKS)
@@ -55,5 +53,4 @@ jobs:
           exit 1
 
       - name: Apply aws-auth ConfigMap
-        run: |
-          kubectl apply -f infra/k8s/aws-auth.yaml
+        run: kubectl apply -f infra/k8s/aws-auth.yaml
