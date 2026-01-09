@@ -38,3 +38,22 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
+      - name: Update kubeconfig (EKS)
+        run: |
+          aws eks update-kubeconfig \
+            --region us-east-1 \
+            --name tech-challenge-cluster
+
+      - name: Wait for EKS API
+        run: |
+          for i in {1..30}; do
+            kubectl get ns >/dev/null 2>&1 && exit 0
+            echo "Waiting for EKS..."
+            sleep 10
+          done
+          exit 1
+
+      - name: Apply aws-auth ConfigMap
+        run: |
+          kubectl apply -f infra/k8s/aws-auth.yaml
